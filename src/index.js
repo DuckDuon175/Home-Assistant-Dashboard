@@ -1,25 +1,3 @@
-const slider = document.querySelector(".brightness-slider");
-const sliderFill = document.querySelector(".slider-fill");
-const valueDisplay = document.querySelector(".widget-value");
-// eraWidget.triggerAction(actionOn.action, null);
-slider.addEventListener("input", function () {
-  const value = parseFloat(this.value); // Ép kiểu về float
-  sliderFill.style.width = value + "%";
-  valueDisplay.textContent = value + "%";
-  eraWidget.triggerAction(onKitchenLight.action, null, { value: value });
-});
-
-const sliderLivingRoom = document.querySelector(".brightness-sliderLivingRom");
-const valueLivingRoom = document.querySelector(".widget-valueLivingRoom");
-const sliderFillLivingRoom = document.querySelector(".slider-fill-livingRoom");
-
-sliderLivingRoom.addEventListener("input", function () {
-  const value = parseFloat(this.value); // Ép kiểu về float
-  sliderFillLivingRoom.style.width = value + "%";
-  valueLivingRoom.textContent = value + "%";
-  eraWidget.triggerAction(onLivingLight.action, null, { value: value });
-});
-
 // Widget Bed Light
 const widget = document.querySelector(".light-icon");
 const icon = document.querySelector(".light-icon");
