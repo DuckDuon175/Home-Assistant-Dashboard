@@ -12,16 +12,7 @@
 
 <body>
   <div class="container">
-    <div class="sidebar">
-      <i class="fas fa-home active"> </i>
-      <i class="fas fa-bed"> </i>
-      <i class="fas fa-couch"> </i>
-      <i class="fas fa-utensils"> </i>
-      <i class="fas fa-cogs"> </i>
-      <i class="fas fa-bell"> </i>
-      <i class="fas fa-envelope"> </i>
-      <i class="fas fa-user"> </i>
-    </div>
+
     <div class="main-content">
       <div class="nav">
         <div>
@@ -42,11 +33,19 @@
           <div class="title">Bed Light</div>
           <div class="content-wrapper">
             <div class="light-icon" id="bedLightIcon">
-              <img src="assets/imgs/tableLamp.png" alt="imgBedLights" style="margin-top: 30px;" />
+              <!-- <img src="assets/imgs/tableLamp.png" alt="imgBedLights" style="margin-top: 30px;" /> -->
             </div>
-            <div class="status" style="cursor: pointer;">OFF</div>
+            <!-- <div class="status" style="cursor: pointer;">OFF</div> -->
+          </div>
+          <div id="switch">
+            <input type="checkbox" id="bed-light-switch" value="bed-light-on" />
+            <label for="bed-light-switch" class="status" style="margin-top: 80px;">
+            </label>
+            <div class="s" style="margin-top: 80px;"></div>
           </div>
         </div>
+
+        <!-- Widget Kitchen Light -->
         <div class="widget apple-style">
           <div class="widget-header">
             <div class="icon">
@@ -56,110 +55,51 @@
               <div class="widget-title">Kitchen Lights</div>
             </div>
           </div>
-          <div id="kitchen-switch" style="margin-top: 80px; justify-content: center; display: flex;">
-            <label>
-              <span class="switch">
-                <input id="kitchen_status" class="switch__input" type="checkbox" role="switch">
-                <span class="switch__surface">
-                  <span class="switch__surface-glare"></span>
-                </span>
-                <span class="switch__inner-shadow"></span>
-                <span class="switch__inner">
-                  <span class="switch__inner-glare"></span>
-                </span>
-                <span class="switch__rocker-shadow"></span>
-                <span class="switch__rocker-sides">
-                  <span class="switch__rocker-sides-glare"></span>
-                </span>
-                <span class="switch__rocker">
-                  <span class="switch__rocker-glare"></span>
-                </span>
-                <span class="switch__light">
-                  <span class="switch__light-inner"></span>
-                </span>
-              </span>
-              <span class="sr">Light Switch</span>
-            </label>
-          </div>
-          <div class="slider-container" style="margin-top: 0px; display: none;">
-            <div class="slider-track">
-              <input type="range" min="0" max="100" value="71" class="brightness-slider" />
-              <div class="slider-fill"></div>
-            </div>
+          <div id="switch">
+            <input type="checkbox" id="kitchen-light-switch" />
+            <label for="kitchen-light-switch" class="status" style="margin-top: 266px;"></label>
+            <div class="s" style="margin-top: 266px;"></div>
           </div>
         </div>
 
-        <div class="widget livingRoom-widget">
+        <!-- Widget Living Room Light -->
+        <div class="widget livingRoom-widget" style="padding: 19px;">
           <div class="widget-header">
             <div class="icon">
               <img src="assets/imgs/FloorLamp.png" alt="icon" />
             </div>
             <div class="widget-info">
-              <div class="widget-title" style="margin-left: 5px !important;">Living Room Lights</div>
-
+              <div class="widget-title">Living Room Lights</div>
             </div>
           </div>
-          <div id="living-room-switch" style="margin-top: 80px; justify-content: center; display: flex;">
-            <label>
-              <span class="switch">
-                <input id="living_room_status" class="switch__input" type="checkbox" role="switch">
-                <span class="switch__surface">
-                  <span class="switch__surface-glare"></span>
-                </span>
-                <span class="switch__inner-shadow"></span>
-                <span class="switch__inner">
-                  <span class="switch__inner-glare"></span>
-                </span>
-                <span class="switch__rocker-shadow"></span>
-                <span class="switch__rocker-sides">
-                  <span class="switch__rocker-sides-glare"></span>
-                </span>
-                <span class="switch__rocker">
-                  <span class="switch__rocker-glare"></span>
-                </span>
-                <span class="switch__light">
-                  <span class="switch__light-inner"></span>
-                </span>
-              </span>
-              <span class="sr">Light Switch</span>
-            </label>
-          </div>
-          <div class="slider-container" style="margin-top: 0px; display: none;">
-            <div class="slider-track">
-              <input type="range" min="0" max="100" value="71" class="brightness-sliderLivingRom" />
-              <div class="slider-fill-livingRoom"></div>
-            </div>
+          <div id="switch">
+            <input type="checkbox" id="living-room-switch" />
+            <label for="living-room-switch" class="status" style="margin-top: 266px;"></label>
+            <div class="s" style="margin-top: 266px;"></div>
           </div>
         </div>
+
+        <!-- Widget Humidity Light -->
         <div class="widget humidifier-widget">
           <div class="title">Humidity</div>
-          <div class="gauge humidifier neon" style="--value: 68">
-            <div class="dial"></div>
-            <div class="fill"></div>
-            <div class="value">68%</div>
-          </div>
-          <div class="checkbox_item humidity_control">
-            <label class="checkbox_wrap">
-              <input type="checkbox" name="checkbox" class="checkbox_inp">
-              <span class="checkbox_mark"></span>
-            </label>
+          <div id="switch">
+            <input type="checkbox" id="humidity-switch" />
+            <label for="humidity-switch" class="status" style="margin-top: 301px;"></label>
+            <div class="s" style="margin-top: 301px;"></div>
           </div>
         </div>
 
+        <!-- Widget Temp Light -->
         <div class="widget temp-widget">
           <div class="title">Temperature</div>
-          <div class="gauge temp neon" style="--value: 72">
-            <div class="dial"></div>
-            <div class="fill"></div>
-            <div class="value">80%</div>
-          </div>
-          <div class="checkbox_item temp_control">
-            <label class="checkbox_wrap">
-              <input type="checkbox" name="checkbox" class="checkbox_inp">
-              <span class="checkbox_mark"></span>
-            </label>
+          <div id="switch">
+            <input type="checkbox" id="temp-switch" />
+            <label for="temp-switch" class="status" style="margin-top: 301px;"></label>
+            <div class="s" style="margin-top: 301px;"></div>
           </div>
         </div>
+
+        <!-- Widget Weather-->
         <div class="widget weather-widget">
           <div class="weather-header">
             <div class="weather-main">
@@ -176,7 +116,7 @@
           </div>
         </div>
 
-
+        <!-- Data Widget -->
         <div class="widget data-widget">
           <div class="title-dataWidget">Data Monitor</div>
           <div class="subtitle-dataWidget">Real-time Data</div>
@@ -186,13 +126,13 @@
               <div class="label" style="margin-top: 3px;"><i class="fas fa-thermometer-half"
                   style="font-size: 20px; margin-right: 8px;"></i>Temperature
               </div>
-              <div id="container_temperature"></div>
+              <div id="container_temperature" style="stroke: #fafafabd;"></div>
             </div>
 
             <div class="card card_waterlevel">
               <div class="label" style="margin-top: 3px"><i class="fas fa-water"
                   style="font-size: 20px; margin-right: 10px;"></i>Water Level</div>
-              <div id="container_waterlevel"></div>
+              <div id="container_waterlevel" style="stroke: #fafafabd;"></div>
             </div>
           </div>
 
@@ -200,13 +140,13 @@
             <div class="card card_tds">
               <div class="label" style="margin-top: 3px"><i class="fas fa-flask"
                   style="font-size: 30px; margin-right: 8px;"></i>TDS</div>
-              <div id="container_tds"></div>
+              <div id="container_tds" style="stroke: #fafafabd;"></div>
             </div>
 
             <div class="card card_ph">
               <div class="label" style="margin-top: 3px"><i class="fas fa-flask"
                   style="font-size: 30px; margin-right: 8px;"></i>pH</div>
-              <div id="container_ph"></div>
+              <div id="container_ph" style="stroke: #fafafabd;"></div>
             </div>
           </div>
 
@@ -214,48 +154,27 @@
             <div class="card_final card_conductivity">
               <div class="label" style="margin-top: 3px"><i class="fas fa-plug"
                   style="font-size: 30px; margin-right: 8px;"></i>Conductivity</div>
-              <div id="container_conductivity"></div>
+              <div id="container_conductivity" style="stroke: #fafafabd;"></div>
             </div>
           </div>
         </div>
 
-
-        <div class="widget chart-container">
-          <div class="chart-title">Humidity & Temperature Statistics</div>
-          <canvas id="dataChart"></canvas>
-          <div class="chart-controls">
-            <button class="time-range active" data-minutes="0">Live</button>
-            <button class="time-range" data-minutes="5">Analyze data</button>
-          </div>
+        <!-- Chart Widget -->
+        <div class="widget chart-container1">
+          <figure class="highcharts-figure">
+            <div id="chart-container"></div>
+          </figure>
         </div>
-
-
-        <div class="temp-controls">
-          <button class="temp-button decrease">-</button>
-          <button class="temp-button increase">+</button>
-        </div>
-      </div>
-    </div>
-    <div id="statsModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Thống kê dữ liệu</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Thời gian</th>
-              <th>Humidity</th>
-              <th>Temp</th>
-            </tr>
-          </thead>
-          <tbody id="statsTableBody"></tbody>
-        </table>
       </div>
     </div>
   </div>
   </div>
   </div>
   <script src="https://rawgit.com/kimmobrunfeldt/progressbar.js/1.0.0/dist/progressbar.js"></script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/modules/export-data.js"></script>
+  <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="src/index.js"></script>

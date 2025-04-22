@@ -2,100 +2,22 @@
 const widget = document.querySelector(".light-icon");
 const icon = document.querySelector(".light-icon");
 const status = document.querySelector(".status");
+const bedLightSwitch = document.querySelector("#bed-light-switch");
 let isOn = false;
-
-widget.addEventListener("click", () => {
-  isOn = !isOn;
-  if (isOn) {
-    icon.classList.add("active");
-    status.textContent = "ON";
-    eraWidget.triggerAction(onBedLight.action, null);
-  } else {
-    icon.classList.remove("active");
-    status.textContent = "OFF";
-    eraWidget.triggerAction(offBedLight.action, null);
-  }
-});
 
 status.addEventListener("click", () => {
   isOn = !isOn;
   if (isOn) {
     icon.classList.add("active");
-    status.textContent = "ON";
-    eraWidget.triggerAction(onBedLight.action, null);
   } else {
     icon.classList.remove("active");
-    status.textContent = "OFF";
-    eraWidget.triggerAction(offBedLight.action, null);
   }
 });
-// ============ Power Off Buttons ==============
-function handlePowerOff(type) {
-  if (type === "temp" || type === "both") {
-    isTempActive = false;
-    const gaugeTemp = document.querySelector(".temp-widget .gauge.temp.neon");
-    gaugeTemp.style.setProperty("--value", 0);
-    gaugeTemp.querySelector(".value").textContent = "OFF";
-    updateChart(0, NaN);
-  }
 
-  if (type === "humidifier" || type === "both") {
-    isHumidActive = false;
-    const gaugeHumid = document.querySelector(
-      ".humidifier-widget .gauge.humidifier.neon"
-    );
-    gaugeHumid.style.setProperty("--value", 0);
-    gaugeHumid.querySelector(".value").textContent = "OFF";
-    updateChart(NaN, 0);
-  }
-}
-
-// Gán sự kiện cho nút tắt
-document.querySelectorAll(".controls button:last-child").forEach((btn) => {
-  btn.addEventListener("click", function () {
-    const isTemp = this.closest(".temp-widget");
-    handlePowerOff(isTemp ? "temp" : "humidifier");
-  });
+//Get the current state of the switch
+bedLightSwitch.addEventListener("change", () => { 
+  console.log(bedLightSwitch.checked);
 });
-
-// ============ Active Buttons ==============
-function handleActive(type) {
-  if (type === "temp" || type === "both") {
-    isTempActive = true;
-    if (lastTempValue !== null) {
-      updateTempGauge(lastTempValue);
-      updateChart(lastTempValue, NaN);
-    }
-  }
-
-  if (type === "humidifier" || type === "both") {
-    isHumidActive = true;
-    if (lastHumidValue !== null) {
-      updateGauge(lastHumidValue);
-      updateChart(NaN, lastHumidValue);
-    }
-  }
-}
-document.querySelectorAll(".controls .active").forEach((btn) => {
-  btn.addEventListener("click", function () {
-    const isTemp = this.closest(".temp-widget");
-    handleActive(isTemp ? "temp" : "humidifier");
-  });
-});
-
-function updateTempGauge(newVal) {
-  const gauge = document.querySelector(".temp-widget .gauge.temp.neon");
-  gauge.style.setProperty("--value", newVal);
-  gauge.querySelector(".value").textContent = newVal + "°C";
-}
-
-function updateGauge(newVal) {
-  const gauge = document.querySelector(
-    ".humidifier-widget .gauge.humidifier.neon"
-  );
-  gauge.style.setProperty("--value", newVal);
-  gauge.querySelector(".value").textContent = newVal + "%";
-}
 
 //============Air Conditioner Widget==============
 document.addEventListener("DOMContentLoaded", () => {
@@ -136,226 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initial display update
   updateDisplay(temperature);
 });
-//===========Realtime Chart===========
-let myChart; // Biến lưu trữ đối tượng chart
-let chartData = []; // Mảng lưu trữ dữ liệu theo thời gian
-const maxDataPoints = 20;
-const maxLiveDataPoints = 30; // 60 điểm = 1 phút nếu cập nhật mỗi giây
-let allChartData = []; // Lưu toàn bộ dữ liệu
-let currentTimeRange = 0; // 0 = live
-// Hàm khởi tạo chart
-function initChart() {
-  const ctx = document.getElementById("dataChart").getContext("2d");
-  myChart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: [],
-      datasets: [
-        {
-          label: "Humidity",
-          data: [],
-          borderColor: "#FF5500",
-          backgroundColor: "rgba(255,85,0,0.1)",
-          tension: 0.4,
-          borderWidth: 2,
-          spanGaps: true, // Bỏ qua khoảng trống do NaN
-        },
-        {
-          label: "Temp",
-          data: [],
-          borderColor: "#2196F3",
-          backgroundColor: "rgba(33,150,243,0.1)",
-          tension: 0.4,
-          borderWidth: 2,
-          spanGaps: true, // Bỏ qua khoảng trống do NaN
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          labels: {
-            color: "#fff",
-            size: 12,
-          },
-        },
-      },
-      scales: {
-        x: {
-          grid: {
-            color: "rgba(255,255,255,0.1)",
-          },
-          ticks: {
-            color: "#fff",
-            size: 10,
-          },
-        },
-        y: {
-          grid: {
-            color: "rgba(255,255,255,0.1)",
-          },
-          ticks: {
-            color: "#fff",
-            font: {
-              size: 11, // Tăng nhẹ kích thước chữ
-              family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-            },
-          },
-        },
-      },
-    },
-  });
-
-  // Đặt kích thước lớn hơn cho chart khi khởi động
-  const chartContainer = document.getElementById("chartContainer");
-}
-
-// Hàm cập nhật dữ liệu chart
-function updateChart(humidifierVal, tempVal) {
-  const now = new Date();
-  const timestamp = now.getTime();
-
-  const timeLabel = `${now.getHours().toString().padStart(2, "0")}:${now
-    .getMinutes()
-    .toString()
-    .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
-
-  // Thay thế null bằng NaN
-  const newData = {
-    time: timeLabel,
-    humidifier: typeof humidifierVal === "number" ? humidifierVal : NaN,
-    temp: typeof tempVal === "number" ? tempVal : NaN,
-    timestamp: timestamp,
-  };
-
-  chartData.push(newData);
-  allChartData.push(newData);
-
-  if (chartData.length > maxDataPoints) {
-    chartData.shift();
-  }
-
-  myChart.data.labels = chartData.map((item) => item.time);
-  myChart.data.datasets[0].data = chartData.map((item) => item.humidifier);
-  myChart.data.datasets[1].data = chartData.map((item) => item.temp);
-  myChart.update();
-}
-
-// Hàm thu nhỏ chart dần dần
-function resizeChart() {
-  const chartContainer = document.getElementById("chartContainer");
-  let width = 80; // Kích thước ban đầu
-  let height = 400;
-
-  const resizeInterval = setInterval(() => {
-    if (width > 30) {
-      width -= 0.5;
-      height -= 2.5;
-      // chartContainer.style.width = `${width}%`;
-      // chartContainer.style.height = `${height}px`;
-    } else {
-      clearInterval(resizeInterval);
-    }
-  }, 1000); // Thay đổi kích thước mỗi giây
-}
-
-// Hàm reset chart
-function resetChart() {
-  chartData = [];
-  myChart.data.labels = [];
-  myChart.data.datasets[0].data = [];
-  myChart.data.datasets[1].data = [];
-  myChart.update();
-}
-
-// Khởi tạo chart và bắt đầu thu nhỏ
-initChart();
-resizeChart();
-
-// Reset chart sau 30 phút
-setTimeout(resetChart, 30 * 60 * 1000);
-
-// ============ XỬ LÝ NÚT TIME RANGE ============
-document.querySelectorAll(".time-range").forEach((button) => {
-  button.addEventListener("click", function () {
-    // Xóa class active của tất cả các nút
-    document.querySelectorAll(".time-range").forEach((btn) => {
-      btn.classList.remove("active");
-    });
-
-    // Thêm class active cho nút được chọn
-    this.classList.add("active");
-
-    // Cập nhật time range
-    const minutes = parseInt(this.dataset.minutes);
-    currentTimeRange = minutes;
-    // showStatsModal(minutes);
-    // Nếu không phải chế độ live, dừng cập nhật realtime
-    if (minutes !== 0) {
-      clearInterval(intervalId);
-      showStatsModal(minutes);
-    } else {
-      // Nếu quay lại chế độ live, khởi động lại interval
-      intervalId = setInterval(() => updateRandom("both"), 1000);
-    }
-
-    refreshChartDisplay();
-  });
-});
-// Hàm làm mới hiển thị chart
-function refreshChartDisplay() {
-  let filteredData = [];
-
-  if (currentTimeRange === 0) {
-    filteredData = [...allChartData];
-  } else {
-    const cutoffTime = new Date();
-    cutoffTime.setMinutes(cutoffTime.getMinutes() - currentTimeRange);
-    filteredData = allChartData.filter((item) => item.timestamp > cutoffTime);
-  }
-
-  myChart.data.labels = filteredData.map((item) => item.timestamp);
-  myChart.data.datasets[0].data = filteredData.map((item) => item.humidifier);
-  myChart.data.datasets[1].data = filteredData.map((item) => item.temp);
-  myChart.update();
-}
-
-function showStatsModal(minutes) {
-  console.log("Acess to showStatsModal");
-  const modal = document.getElementById("statsModal");
-  const cutoffTime = new Date(Date.now() - minutes * 60 * 1000);
-
-  // Lọc dữ liệu
-  const filteredData = allChartData.filter(
-    (item) => new Date(item.timestamp) >= cutoffTime
-  );
-
-  // Tạo nội dung bảng
-  const tableBody = document.getElementById("statsTableBody");
-  tableBody.innerHTML = filteredData
-    .map(
-      (item) => `
-    <tr>
-      <td>${item.time}</td>
-      <td>${item.humidifier}</td>
-      <td>${item.temp}</td>
-    </tr>
-  `
-    )
-    .join("");
-
-  // Hiển thị modal
-  modal.style.display = "block";
-
-  // Xử lý đóng modal
-  document.querySelector(".close").onclick = () =>
-    (modal.style.display = "none");
-  window.onclick = (event) => {
-    if (event.target === modal) modal.style.display = "none";
-  };
-}
 
 //==============Add E-Ra Services============
 const eraWidget = new EraWidget();
@@ -403,6 +105,7 @@ eraWidget.init({
     }
   },
 });
+
 //===========Full Screen Feature==========
 // Add fullscreen button HTML to your document first
 const fullscreenButton = document.createElement("button");
@@ -475,7 +178,7 @@ document.addEventListener("MSFullscreenChange", function () {
     : '<i class="fas fa-expand"></i>';
 });
 
-// Temperature
+//Temperature Gauge
 let tempProgressBar = new ProgressBar.SemiCircle("#container_temperature", {
   strokeWidth: 12,
   color: "white",
@@ -504,6 +207,7 @@ let tempProgressBar = new ProgressBar.SemiCircle("#container_temperature", {
 });
 tempProgressBar.animate(0.8);
 
+//Water Level Bar
 let waterProgressBar = new ProgressBar.Line("#container_waterlevel", {
   strokeWidth: 12,
   color: "white",
@@ -530,6 +234,7 @@ let waterProgressBar = new ProgressBar.Line("#container_waterlevel", {
 });
 waterProgressBar.animate(0.5);
 
+//TDS bar
 let tdsProgressBar = new ProgressBar.Line("#container_tds", {
   strokeWidth: 12,
   trailColor: "rgba(255,255,255, 0.4)",
@@ -555,6 +260,7 @@ let tdsProgressBar = new ProgressBar.Line("#container_tds", {
 });
 tdsProgressBar.animate(0.5);
 
+//pH bar
 let phProgressBar = new ProgressBar.Line("#container_ph", {
   strokeWidth: 12,
   trailColor: "rgba(255,255,255, 0.4)",
@@ -580,6 +286,7 @@ let phProgressBar = new ProgressBar.Line("#container_ph", {
 });
 phProgressBar.animate(0.5);
 
+//Conductivity bar
 let conductProgressBar = new ProgressBar.Line("#container_conductivity", {
   strokeWidth: 12,
   trailColor: "rgba(255,255,255, 0.4)",
@@ -604,3 +311,149 @@ let conductProgressBar = new ProgressBar.Line("#container_conductivity", {
   },
 });
 conductProgressBar.animate(0.5);
+
+const onChartLoad = function () {
+  const chart = this,
+      series = chart.series[0];
+
+  setInterval(function () {
+      const x = (new Date()).getTime(),
+          y = Math.random();
+
+      series.addPoint([x, y], true, true);
+  }, 5000);
+};
+
+// Create the initial data
+const data = (function () {
+  const data = [];
+  const time = new Date().getTime();
+
+  for (let i = -19; i <= 0; i += 1) {
+      data.push({
+          x: time + i * 1000,
+          y: Math.random()
+      });
+  }
+  return data;
+}());
+
+// Plugin to add a pulsating marker on add point
+Highcharts.addEvent(Highcharts.Series, 'addPoint', e => {
+  const point = e.point,
+      series = e.target;
+
+  if (!series.pulse) {
+      series.pulse = series.chart.renderer.circle()
+          .add(series.markerGroup);
+  }
+
+  setTimeout(() => {
+      series.pulse
+          .attr({
+              x: series.xAxis.toPixels(point.x, true),
+              y: series.yAxis.toPixels(point.y, true),
+              r: series.options.marker.radius,
+              opacity: 1,
+              fill: series.color
+          })
+          .animate({
+              r: 20,
+              opacity: 0
+          }, {
+              duration: 1000,
+          });
+  }, 1);
+});
+
+
+Highcharts.chart('chart-container', {
+  chart: {
+      type: 'spline',
+      events: {
+          load: onChartLoad
+      }
+  },
+
+  time: {
+      useUTC: false
+  },
+
+  title: {
+      text: 'Live random data',
+       style: {
+          color: '#FFFFFF',
+       }
+  },
+
+  accessibility: {
+      announceNewData: {
+          enabled: true,
+          minAnnounceInterval: 15000,
+          announcementFormatter: function (allSeries, newSeries, newPoint) {
+              if (newPoint) {
+                  return 'New point added. Value: ' + newPoint.y;
+              }
+              return false;
+          }
+      }
+  },
+
+  xAxis: {
+      type: 'datetime',
+      tickPixelInterval: 150,
+      maxPadding: 0.1,
+      lineColor: '#FFFFFF',
+      tickColor: '#FFFFFF',
+      labels: {
+          style: {
+              color: '#FFFFFF',
+          }
+      }
+  },
+
+  yAxis: {
+      title: {
+          text: 'Value',
+          style: {
+            color: '#FFFFFF',
+         }
+      },
+      lineColor: '#FFFFFF',
+      tickColor: '#FFFFFF',
+      labels: {
+          style: {
+              color: '#FFFFFF',
+          }
+      },
+      plotLines: [
+          {
+              value: 0,
+              width: 1,
+              color: '#FFFFFF',
+          }
+      ]
+  },
+
+  tooltip: {
+      headerFormat: '<b>{series.name}</b><br/>',
+      pointFormat: '{point.x:%Y-%m-%d %H:%M:%S}<br/>{point.y:.2f}'
+  },
+
+  legend: {
+      enabled: false
+  },
+
+  exporting: {
+      enabled: false
+  },
+
+  series: [
+      {
+          name: 'Random data',
+          lineWidth: 2,
+          color: '#00FFFF',
+          data
+      }
+  ]
+});
