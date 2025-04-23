@@ -1,182 +1,76 @@
+// Get Data from Era Widget
+const eraWidget = new EraWidget();
+let configTemp, configWater, configTDS, configPH, configConductivity;
+let configStatusFan, configStatusHeater, configStatusLight, configStatusFeeder, configStatusPump, configStatusFilter, configStatusAuto, configStatusOTA;
+let StatusPump = 0, StatusLight = 0, StatusFan = 0, StatusFeeder = 0, StatusHeater = 0, StatusFilter = 0, StatusAuto = 0, StatusOTA = 0;
+let TemperatureValue = 50, WaterLevelValue = 2, TDSValue = 3, PHValue = 4, ConductivityValue = 5;
+
+
+
+eraWidget.init({
+  onConfiguration: (configuration) => {
+    configTemp = configuration.realtime_configs[0];
+    configTDS = configuration.realtime_configs[1];
+    configPH = configuration.realtime_configs[2];
+    configWater = configuration.realtime_configs[3];
+    configConductivity = configuration.realtime_configs[4];
+    configStatusFan = configuration.realtime_configs[5];
+    configStatusHeater = configuration.realtime_configs[6];
+    configStatusLight = configuration.realtime_configs[7];
+    configStatusFeeder = configuration.realtime_configs[8];
+    configStatusPump = configuration.realtime_configs[9];
+    configStatusFilter = configuration.realtime_configs[10];
+    configStatusAuto = configuration.realtime_configs[11];
+    configStatusOTA = configuration.realtime_configs[12];
+  },
+  onValues: (values) => {
+    // Values
+    TemperatureValue = values[configTemp.id].value;
+    WaterLevelValue = values[configWater.id].value;
+    TDSValue = values[configTDS.id].value;
+    PHValue = values[configPH.id].value;
+    ConductivityValue = values[configConductivity.id].value;
+    // Status
+    StatusFan = values[configStatusFan.id].value;
+    StatusHeater = values[configStatusHeater.id].value;
+    StatusLight = values[configStatusLight.id].value;
+    StatusFeeder = values[configStatusFeeder.id].value;
+    StatusPump = values[configStatusPump.id].value;
+    StatusFilter = values[configStatusFilter.id].value;
+    StatusAuto = values[configStatusAuto.id].value;
+    StatusOTA = values[configStatusOTA.id].value;
+  },
+
+});
+
+
+
+
+
+
+
+
+
+
 // Widget Bed Light
 const widget = document.querySelector(".light-icon");
 const icon = document.querySelector(".light-icon");
 const status = document.querySelector(".status");
 const bedLightSwitch = document.querySelector("#bed-light-switch");
-let isOn = false;
 
 status.addEventListener("click", () => {
-  isOn = !isOn;
-  if (isOn) {
+  StatusLight = !StatusLight;
+  if (StatusLight) {
     icon.classList.add("active");
   } else {
     icon.classList.remove("active");
   }
 });
-
 //Get the current state of the switch
 bedLightSwitch.addEventListener("change", () => { 
   console.log(bedLightSwitch.checked);
 });
 
-//============Air Conditioner Widget==============
-document.addEventListener("DOMContentLoaded", () => {
-  const temperatureValue = document.querySelector(".temperature-value");
-  const gaugeFill = document.querySelector(".gauge-fill");
-  const gaugeDot = document.querySelector(".gauge-dot");
-  const decreaseButton = document.querySelector(".temp-button.decrease");
-  const increaseButton = document.querySelector(".temp-button.increase");
-
-  let temperature = 15;
-
-  const updateDisplay = (temp) => {
-    const minTemp = 14;
-    const maxTemp = 30;
-    const percentage = (temp - minTemp) / (maxTemp - minTemp);
-    const rotation = percentage * 360;
-
-    temperatureValue.textContent = temp;
-    gaugeFill.style.setProperty("--fill-percentage", `${rotation}deg`); // Chỉ cập nhật fill
-    gaugeDot.style.setProperty("--rotation", `${rotation}deg`); // Xoay dot
-  };
-
-  // Temperature adjustment function
-  const adjustTemperature = (increment) => {
-    const newTemp = temperature + increment;
-    if (newTemp >= 14 && newTemp <= 30) {
-      temperature = newTemp;
-      updateDisplay(temperature);
-      eraWidget.triggerAction(onAirConditioner.action, null, {
-        value: temperature,
-      });
-    }
-  };
-
-  // Event listeners for temperature buttons
-  decreaseButton.addEventListener("click", () => adjustTemperature(-1));
-  increaseButton.addEventListener("click", () => adjustTemperature(1));
-  // Initial display update
-  updateDisplay(temperature);
-});
-
-//==============Add E-Ra Services============
-const eraWidget = new EraWidget();
-const temp = document.getElementById("temp-widget");
-const humi = document.getElementById("humidifier-widget");
-let isTempActive = true;
-let isHumidActive = true;
-let lastTempValue = null;
-let lastHumidValue = null;
-let configTemp = null,
-  configHumi = null,
-  onBedLight = null,
-  offBedLight = null,
-  onKitchenLight = null,
-  onLivingLight = null,
-  onAirConditioner = null;
-
-eraWidget.init({
-  onConfiguration: (configuration) => {
-    configTemp = configuration.realtime_configs[0];
-    configHumi = configuration.realtime_configs[1];
-    onBedLight = configuration.actions[0];
-    offBedLight = configuration.actions[1];
-    onKitchenLight = configuration.actions[2];
-    onLivingLight = configuration.actions[3];
-    onAirConditioner = configuration.actions[4];
-  },
-  onValues: (values) => {
-    if (configTemp && values[configTemp.id]) {
-      const tempValue = values[configTemp.id].value;
-      lastTempValue = tempValue;
-      if (isTempActive) {
-        updateTempGauge(tempValue);
-        updateChart(tempValue, NaN);
-      }
-    }
-
-    if (configHumi && values[configHumi.id]) {
-      const humidValue = values[configHumi.id].value;
-      lastHumidValue = humidValue;
-      if (isHumidActive) {
-        updateGauge(humidValue);
-        updateChart(NaN, humidValue);
-      }
-    }
-  },
-});
-
-//===========Full Screen Feature==========
-// Add fullscreen button HTML to your document first
-const fullscreenButton = document.createElement("button");
-fullscreenButton.innerHTML = '<i class="fas fa-expand"></i>';
-fullscreenButton.className = "fullscreen-button";
-document.body.appendChild(fullscreenButton);
-
-// Add fullscreen functionality
-let isFullscreen = false;
-
-function toggleFullscreen() {
-  if (!isFullscreen) {
-    // Enter fullscreen
-    if (document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen();
-    } else if (document.documentElement.mozRequestFullScreen) {
-      document.documentElement.mozRequestFullScreen();
-    } else if (document.documentElement.webkitRequestFullscreen) {
-      document.documentElement.webkitRequestFullscreen();
-    } else if (document.documentElement.msRequestFullscreen) {
-      document.documentElement.msRequestFullscreen();
-    }
-    fullscreenButton.innerHTML = '<i class="fas fa-compress"></i>';
-  } else {
-    // Exit fullscreen
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    }
-    fullscreenButton.innerHTML = '<i class="fas fa-expand"></i>';
-  }
-  isFullscreen = !isFullscreen;
-}
-
-// Event listener for fullscreen button
-fullscreenButton.addEventListener("click", toggleFullscreen);
-
-// Update button icon when fullscreen changes through other means (like Esc key)
-document.addEventListener("fullscreenchange", function () {
-  isFullscreen = !!document.fullscreenElement;
-  fullscreenButton.innerHTML = isFullscreen
-    ? '<i class="fas fa-compress"></i>'
-    : '<i class="fas fa-expand"></i>';
-});
-
-// Handle fullscreen change for different browsers
-document.addEventListener("webkitfullscreenchange", function () {
-  isFullscreen = !!document.webkitFullscreenElement;
-  fullscreenButton.innerHTML = isFullscreen
-    ? '<i class="fas fa-compress"></i>'
-    : '<i class="fas fa-expand"></i>';
-});
-
-document.addEventListener("mozfullscreenchange", function () {
-  isFullscreen = !!document.mozFullScreenElement;
-  fullscreenButton.innerHTML = isFullscreen
-    ? '<i class="fas fa-compress"></i>'
-    : '<i class="fas fa-expand"></i>';
-});
-
-document.addEventListener("MSFullscreenChange", function () {
-  isFullscreen = !!document.msFullscreenElement;
-  fullscreenButton.innerHTML = isFullscreen
-    ? '<i class="fas fa-compress"></i>'
-    : '<i class="fas fa-expand"></i>';
-});
 
 //Temperature Gauge
 let tempProgressBar = new ProgressBar.SemiCircle("#container_temperature", {
@@ -205,7 +99,7 @@ let tempProgressBar = new ProgressBar.SemiCircle("#container_temperature", {
     bar.text.style.color = state.color;
   },
 });
-tempProgressBar.animate(0.8);
+tempProgressBar.animate(TemperatureValue / 100); // Number from 0.0 to 1.0
 
 //Water Level Bar
 let waterProgressBar = new ProgressBar.Line("#container_waterlevel", {
@@ -232,7 +126,7 @@ let waterProgressBar = new ProgressBar.Line("#container_waterlevel", {
     bar.text.style.color = state.color;
   },
 });
-waterProgressBar.animate(0.5);
+waterProgressBar.animate(WaterLevelValue / 100); // Number from 0.0 to 1.0
 
 //TDS bar
 let tdsProgressBar = new ProgressBar.Line("#container_tds", {
@@ -258,7 +152,7 @@ let tdsProgressBar = new ProgressBar.Line("#container_tds", {
     bar.text.style.color = state.color;
   },
 });
-tdsProgressBar.animate(0.5);
+tdsProgressBar.animate(TDSValue / 100); // Number from 0.0 to 1.0
 
 //pH bar
 let phProgressBar = new ProgressBar.Line("#container_ph", {
@@ -284,7 +178,7 @@ let phProgressBar = new ProgressBar.Line("#container_ph", {
     bar.text.style.color = state.color;
   },
 });
-phProgressBar.animate(0.5);
+phProgressBar.animate(PHValue / 100); // Number from 0.0 to 1.0
 
 //Conductivity bar
 let conductProgressBar = new ProgressBar.Line("#container_conductivity", {
@@ -310,25 +204,13 @@ let conductProgressBar = new ProgressBar.Line("#container_conductivity", {
     bar.text.style.color = state.color;
   },
 });
-conductProgressBar.animate(0.5);
+conductProgressBar.animate(ConductivityValue / 100); // Number from 0.0 to 1.0
 
-const onChartLoad = function () {
-  const chart = this,
-      series = chart.series[0];
 
-  setInterval(function () {
-      const x = (new Date()).getTime(),
-          y = Math.random();
-
-      series.addPoint([x, y], true, true);
-  }, 5000);
-};
-
-// Create the initial data
-const data = (function () {
+// Khởi tạo dữ liệu ban đầu
+function generateInitialData() {
   const data = [];
   const time = new Date().getTime();
-
   for (let i = -19; i <= 0; i += 1) {
       data.push({
           x: time + i * 1000,
@@ -336,7 +218,55 @@ const data = (function () {
       });
   }
   return data;
-}());
+}
+
+// Hàm tạo hiệu ứng di chuyển giống Conductivity
+function addConductivityEffect(series, point) {
+  if (!series.pulse) {
+      series.pulse = series.chart.renderer.circle()
+          .attr({ r: 5, opacity: 0 })
+          .add(series.markerGroup);
+  }
+
+  setTimeout(() => {
+      series.pulse
+          .attr({
+              x: series.xAxis.toPixels(point.x, true),
+              y: series.yAxis.toPixels(point.y, true),
+              r: 5,
+              opacity: 1,
+              fill: series.color
+          })
+          .animate({
+              r: 20,
+              opacity: 0
+          }, { duration: 1000 });
+  }, 1);
+}
+function onChartLoad() {
+  const chart = this,
+      series = chart.series;
+
+  setInterval(function () {
+      const x = (new Date()).getTime();
+
+      // Dữ liệu thực tế từ Era Widget
+      let newDataPoints = [
+          { seriesIndex: 0, y: TemperatureValue },  // Temperature (°C)
+          { seriesIndex: 1, y: WaterLevelValue },  // Water Level (%)
+          { seriesIndex: 2, y: Math.min(TDSValue, 100) },  // TDS Value (ppm) (giới hạn từ 0 - 100)
+          { seriesIndex: 3, y: PHValue },  // PH Value
+          { seriesIndex: 4, y: Math.min(ConductivityValue, 100) }  // Conductivity (μS/cm) (giới hạn từ 0 - 100)
+      ];
+
+      newDataPoints.forEach((dataPoint) => {
+          let seriesTarget = series[dataPoint.seriesIndex];
+          seriesTarget.addPoint([x, dataPoint.y], true, true);
+          addConductivityEffect(seriesTarget, { x, y: dataPoint.y });
+      });
+
+  }, 1000);
+}
 
 // Plugin to add a pulsating marker on add point
 Highcharts.addEvent(Highcharts.Series, 'addPoint', e => {
@@ -441,7 +371,7 @@ Highcharts.chart('chart-container', {
   },
 
   legend: {
-      enabled: false
+      enabled: true
   },
 
   exporting: {
@@ -449,11 +379,10 @@ Highcharts.chart('chart-container', {
   },
 
   series: [
-      {
-          name: 'Random data',
-          lineWidth: 2,
-          color: '#00FFFF',
-          data
-      }
-  ]
+    { name: 'Temperature (°C)', lineWidth: 2, color: 'red', data: generateInitialData() },
+    { name: 'Water Level (%)', lineWidth: 2, color: 'blue', data: generateInitialData(), visible: false },
+    { name: 'TDS Value (ppm)', lineWidth: 2, color: 'green', data: generateInitialData(), visible: false },
+    { name: 'PH Value', lineWidth: 2, color: 'yellow', data: generateInitialData(), visible: false },
+    { name: 'Conductivity (μS/cm)', lineWidth: 2, color: 'purple', data: generateInitialData(), visible: false }
+    ]
 });

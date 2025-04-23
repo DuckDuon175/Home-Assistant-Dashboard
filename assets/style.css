@@ -1768,3 +1768,7 @@ input:checked~.s {
 .highcharts-background {
   fill-opacity: 0%;
 }
+
+.highcharts-legend-item text {
+  fill: white !important;
+}
