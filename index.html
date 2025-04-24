@@ -6,7 +6,9 @@
   <title>Smart Home Dashboard</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />
-  
+  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css" />
 </head>
 
@@ -19,14 +21,25 @@
       <div class="nav">
         <div>
           <a class="active" href="#"> HOME </a>
-          <a href="#"> BEDROOM </a>
-          <a href="#"> LIVING ROOM </a>
-          <a href="#"> KITCHEN </a>
+          <a href=""> STREAM </a>
+          <div id="weather-container">
+          </div>
         </div>
         <div>
-          <i class="fas fa-search"> </i>
-          <i class="fas fa-comment-dots"> </i>
-          <i class="fas fa-pen"> </i>
+          <div class="btn" style="margin-right: 20px; margin-left: 0px;">
+            <div>Auto mode:</div>
+            <input type="checkbox" id="auto-btn" />
+            <label for="auto-btn" style="width: 60px; height: 29px;">
+            </label>
+            <div class="s-auto" style="margin-left: 1100px"></div>
+          </div>
+          <div class="btn">
+            <div>FOTA:</div>
+            <input type="checkbox" id="fota-btn" />
+            <label for="fota-btn" style="width: 60px; height: 29px;">
+            </label>
+            <div class="s-auto" style="margin-left: 1233px"></div>
+          </div>
         </div>
       </div>
       <div class="widgets">
@@ -101,20 +114,12 @@
           </div>
         </div>
 
-        <!-- Widget Weather-->
         <div class="widget weather-widget">
-          <div class="weather-header">
-            <div class="weather-main">
-              <h1 class="weather-title">Weather</h1>
-              <div class="weather-subtitle">Sunday</div>
-              <div class="weather-temp">14.6°C</div>
-            </div>
-          </div>
-
-          <div class="canvas-container" id="weather-canvas">
-            <div class="iconWeather">
-              <img src="assets/imgs/rainy.png" alt="icon" />
-            </div>
+          <div class="title">Abc</div>
+          <div id="switch">
+            <input type="checkbox" id="abc-switch" />
+            <label for="abc-switch" class="status" style="margin-top: 301px;"></label>
+            <div class="s" style="margin-top: 301px; left: 69px;"></div>
           </div>
         </div>
 
@@ -167,6 +172,8 @@
             <div id="chart-container"></div>
           </figure>
         </div>
+        <div class="widget stream-monitor">
+        </div>
       </div>
     </div>
   </div>
@@ -180,5 +187,4 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="src/index.js"></script>
-
 </html>
